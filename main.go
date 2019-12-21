@@ -26,21 +26,21 @@ type Book struct {
 
 // Data for Books
 var AllBooks = []Book{
-	Book{Name: "Lean Startup", Issues: 20, Available: true, Issuedto: "sayam"},
-	Book{Name: "The secret", Issues: 40, Available: false, Issuedto: "sayam"},
-	Book{Name: "Steve Jobs", Issues: 200, Available: true, Issuedto: "sayam"},
-	Book{Name: "Moby Dick", Issues: 10, Available: true, Issuedto: "sayam"},
+	Book{Name: "Lean Startup", Issues: 20, Available: true, Issuedto: ""},
+	Book{Name: "The secret", Issues: 40, Available: false, Issuedto: "sanket"},
+	Book{Name: "Steve Jobs", Issues: 200, Available: true, Issuedto: ""},
+	Book{Name: "Moby Dick", Issues: 10, Available: true, Issuedto: ""},
 	Book{Name: "Intro to Algorithms", Issues: 5, Available: false, Issuedto: "sayam"},
-	Book{Name: "Game of Thrones", Issues: 90, Available: true, Issuedto: "sayam"},
-	Book{Name: "The Snape", Issues: 40, Available: true, Issuedto: "sayam"},
+	Book{Name: "Game of Thrones", Issues: 90, Available: true, Issuedto: ""},
+	Book{Name: "The Snape", Issues: 40, Available: true, Issuedto: ""},
 	Book{Name: "Hamlet", Issues: 14, Available: false, Issuedto: "sayam"},
-	Book{Name: "The Wit and Wisdom", Issues: 10, Available: true, Issuedto: "sayam"},
+	Book{Name: "The Wit and Wisdom", Issues: 10, Available: true, Issuedto: ""},
 	Book{Name: "Infinite Game", Issues: 1, Available: false, Issuedto: "sayam"},
-	Book{Name: "War and Peace", Issues: 0, Available: true, Issuedto: "sayam"},
-	Book{Name: "Zero to One", Issues: 100, Available: false, Issuedto: "sayam"},
+	Book{Name: "War and Peace", Issues: 0, Available: true, Issuedto: ""},
+	Book{Name: "Zero to One", Issues: 100, Available: false, Issuedto: "akshay"},
 	Book{Name: "Madame Bovary", Issues: 5, Available: false, Issuedto: "sayam"},
-	Book{Name: "Artificial Intelligence", Issues: 34, Available: true, Issuedto: "sayam"},
-	Book{Name: "Why i Killed Gandhi", Issues: 22, Available: true, Issuedto: "sayam"},
+	Book{Name: "Artificial Intelligence", Issues: 34, Available: true, Issuedto: ""},
+	Book{Name: "Why i Killed Gandhi", Issues: 22, Available: true, Issuedto: ""},
 }
 
 // Home page
@@ -104,9 +104,15 @@ func IssuedUser(w http.ResponseWriter, r *http.Request) {
 
 	bookName := r.URL.Query().Get("book")
 
+	// Check If Book has Issued User return false if not
 	for i, s := range AllBooks {
 		if s.Name == bookName {
-			json.NewEncoder(w).Encode(s.Issuedto)
+
+			if s.Issuedto == "" {
+				json.NewEncoder(w).Encode(false)
+			} else {
+				json.NewEncoder(w).Encode(s.Issuedto)
+			}
 			break
 		}
 		i++
@@ -135,13 +141,18 @@ func TopTrending(w http.ResponseWriter, r *http.Request) {
 
 func handleRequest() {
 
+	// Handlers
 	http.HandleFunc("/api/", homepage)
 	http.HandleFunc("/api/booksAvailable", AllBooksAvailable)
 	http.HandleFunc("/api/bookAvailable", BookAvailable)
 	http.HandleFunc("/api/MostIssued", MostIssued)
 	http.HandleFunc("/api/IssuedTo", IssuedUser)
 	http.HandleFunc("/api/TopTrending", TopTrending)
-	log.Fatal(http.ListenAndServe(":8000", nil))
+
+	err := http.ListenAndServe(":8000", nil)
+	if err != nil {
+		log.Fatal("ListenAndServe: ", err)
+	}
 }
 
 func main() {
