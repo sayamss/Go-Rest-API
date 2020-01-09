@@ -1,5 +1,5 @@
 # Go Library Management API
-
+![GCI Badge](https://img.shields.io/badge/Google%20Code%20In-JBoss%20Community-red?style=flatr&labelColor=fdb900)
 ## Tech Stack - Go
 
 ## How to Run the server
